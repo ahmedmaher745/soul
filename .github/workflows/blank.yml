@@ -1,0 +1,49 @@
+// مثال بسيط لصفحة تسجيل الدخول
+import React, { useState } from 'react';
+
+const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  
+  const handleLogin = () => {
+    // الاتصال بالخادم للمصادقة
+    fetch('http://localhost:5000/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        // حفظ البيانات والانتقال إلى الصفحة الرئيسية
+        localStorage.setItem('token', data.token);
+        window.location.href = '/dashboard';
+      } else {
+        alert('فشل تسجيل الدخول');
+      }
+    })
+  };
+
+  return (
+    <div>
+      <h2>تسجيل الدخول</h2>
+      <input 
+        type="email" 
+        placeholder="البريد الإلكتروني" 
+        value={email}
+        onChange={(e) => setEmail(e.target.value)} 
+      />
+      <input 
+        type="password" 
+        placeholder="كلمة المرور" 
+        value={password}
+        onChange={(e) => setPassword(e.target.value)} 
+      />
+      <button onClick={handleLogin}>تسجيل الدخول</button>
+    </div>
+  );
+};
+
+export default Login;
